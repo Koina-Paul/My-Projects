@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tutor-Student Scheduler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .form-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    .form-box input, .form-box button {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .output {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    }
+    .match {
+      background: #e0ffe0;
+      padding: 10px;
+      margin: 5px 0;
+      border-left: 4px solid green;
+    }
+    .nomatch {
+      background: #ffe0e0;
+      padding: 10px;
+      margin: 5px 0;
+      border-left: 4px solid red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tutor-Student Scheduling System</h1>
+
+  <div class="container">
+    <!-- Tutor Form -->
+    <div class="form-box">
+      <h2>Add Tutor</h2>
+      <input type="number" id="tutorId" placeholder="Tutor ID">
+      <input type="text" id="tutorName" placeholder="Tutor Name">
+      <input type="text" id="tutorSubject" placeholder="Subject">
+      <input type="text" id="tutorAvailability" placeholder="Availability">
+      <button onclick="addTutor()">Add Tutor</button>
+    </div>
+
+    <!-- Student Form -->
+    <div class="form-box">
+      <h2>Add Student</h2>
+      <input type="number" id="studentId" placeholder="Student ID">
+      <input type="text" id="studentName" placeholder="Student Name">
+      <input type="text" id="studentSubject" placeholder="Subject Required">
+      <button onclick="addStudent()">Add Student</button>
+    </div>
+  </div>
+
+  <div class="output">
+    <h2>Available Tutors</h2>
+    <ul id="tutorList"></ul>
+
+    <h2>Registered Students</h2>
+    <ul id="studentList"></ul>
+
+    <h2>Matches</h2>
+    <div id="matches"></div>
+  </div>
+
+  <script>
+    let tutors = [];
+    let students = [];
+
+    function addTutor() {
+      let id = document.getElementById("tutorId").value;
+      let name = document.getElementById("tutorName").value;
+      let subject = document.getElementById("tutorSubject").value;
+      let availability = document.getElementById("tutorAvailability").value;
+
+      if(id && name && subject && availability){
+        tutors.push({id, name, subject, availability});
+        displayTutors();
+        matchTutors();
+      }
+    }
+
+    function addStudent() {
+      let id = document.getElementById("studentId").value;
+      let name = document.getElementById("studentName").value;
+      let subject = document.getElementById("studentSubject").value;
+
+      if(id && name && subject){
+        students.push({id, name, subject});
+        displayStudents();
+        matchTutors();
+      }
+    }
+
+    function displayTutors() {
+      let list = document.getElementById("tutorList");
+      list.innerHTML = "";
+      tutors.forEach(t => {
+        list.innerHTML += `<li><b>ID:</b> ${t.id}, <b>Name:</b> ${t.name}, <b>Subject:</b> ${t.subject}, <b>Availability:</b> ${t.availability}</li>`;
+      });
+    }
+
+    function displayStudents() {
+      let list = document.getElementById("studentList");
+      list.innerHTML = "";
+      students.forEach(s => {
+        list.innerHTML += `<li><b>ID:</b> ${s.id}, <b>Name:</b> ${s.name}, <b>Subject Required:</b> ${s.subject}</li>`;
+      });
+    }
+
+    function matchTutors() {
+      let matchDiv = document.getElementById("matches");
+      matchDiv.innerHTML = "";
+
+      students.forEach(s => {
+        let found = false;
+        tutors.forEach(t => {
+          if(s.subject.toLowerCase() === t.subject.toLowerCase()){
+            matchDiv.innerHTML += `<div class="match">Tutor <b>${t.name}</b> matched with Student <b>${s.name}</b> for subject: ${t.subject}</div>`;
+            found = true;
+          }
+        });
+        if(!found){
+          matchDiv.innerHTML += `<div class="nomatch">No tutor available for Student <b>${s.name}</b> (Subject: ${s.subject})</div>`;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
